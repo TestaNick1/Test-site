@@ -224,6 +224,55 @@ img { max-width: 100%; display: block; }
 .port-card h3 { margin: 0 0 8px; color: var(--navy-800); }
 .port-card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
+/* Shipowners page */
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.person-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px;
+  display: flex;
+  gap: 18px;
+  box-shadow: 0 4px 14px rgba(6,20,35,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.person-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+.person-avatar {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--navy-800), var(--blue-500));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.person-body h3 { margin: 0 0 2px; color: var(--navy-900); font-size: 1.1rem; }
+.person-role { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+.person-body p { margin: 0 0 12px; color: var(--ink); font-size: 0.9rem; }
+
+.legacy-tag {
+  display: inline-block;
+  background: #eef3f8;
+  color: var(--navy-800);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin: 0 6px 6px 0;
+}
+
 /* CTA */
 .cta {
   background: linear-gradient(120deg, var(--navy-800), var(--blue-500));
@@ -477,7 +526,7 @@ tbody tr { border-bottom: 1px solid var(--border); }
 
 /* Responsive */
 @media (max-width: 960px) {
-  .cards-grid, .ports-grid, .fleet-grid, .services-grid, .process-list { grid-template-columns: repeat(2, 1fr); }
+  .cards-grid, .ports-grid, .fleet-grid, .services-grid, .process-list, .person-grid { grid-template-columns: repeat(2, 1fr); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
   .contact-wrap { grid-template-columns: 1fr; }
 }
@@ -496,7 +545,8 @@ tbody tr { border-bottom: 1px solid var(--border); }
   }
   .nav-list.open { display: flex; }
   .hero h1 { font-size: 2rem; }
-  .cards-grid, .ports-grid, .fleet-grid, .services-grid, .process-list { grid-template-columns: 1fr; }
+  .cards-grid, .ports-grid, .fleet-grid, .services-grid, .process-list, .person-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .bar-row { grid-template-columns: 100px 1fr 50px; }
+  .person-card { flex-direction: column; }
 }
