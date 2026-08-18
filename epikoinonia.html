@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Επικοινωνία | Ελληνική Ναυτιλία</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">⚓ Ελληνική<span>Ναυτιλία</span></a>
+    <nav class="nav">
+      <button class="nav-toggle" id="navToggle" aria-label="Μενού">☰</button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html">Αρχική</a></li>
+        <li><a href="stolos.html">Ο Στόλος μας</a></li>
+        <li><a href="ypiresies.html">Υπηρεσίες</a></li>
+        <li><a href="statistika.html">Στατιστικά</a></li>
+        <li><a href="epikoinonia.html">Επικοινωνία</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Επικοινωνήστε μαζί μας</h1>
+    <p>Είμαστε εδώ για κάθε ερώτηση σχετικά με τον στόλο, τις υπηρεσίες ή τη συνεργασία μαζί μας.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-wrap">
+
+      <div class="contact-info">
+        <h3>Στοιχεία Επικοινωνίας</h3>
+
+        <div class="contact-item">
+          <span class="icon">📍</span>
+          <p><strong>Διεύθυνση</strong>Ακτή Μιαούλη 25, Πειραιάς, Ελλάδα</p>
+        </div>
+        <div class="contact-item">
+          <span class="icon">📞</span>
+          <p><strong>Τηλέφωνο</strong>+30 210 000 0000</p>
+        </div>
+        <div class="contact-item">
+          <span class="icon">✉️</span>
+          <p><strong>Email</strong>info@example.gr</p>
+        </div>
+        <div class="contact-item">
+          <span class="icon">🕒</span>
+          <p><strong>Ώρες Λειτουργίας</strong>Δευτέρα – Παρασκευή, 09:00–17:00</p>
+        </div>
+
+        <div class="contact-item">
+          <span class="icon">⚓</span>
+          <p><strong>Σημείωση</strong>Αυτή είναι μια δοκιμαστική ιστοσελίδα. Τα στοιχεία επικοινωνίας είναι ενδεικτικά.</p>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <div class="form-group">
+          <label for="name">Ονοματεπώνυμο</label>
+          <input type="text" id="name" name="name" placeholder="Το ονοματεπώνυμό σας" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="subject">Θέμα</label>
+          <select id="subject" name="subject">
+            <option value="general">Γενική Ερώτηση</option>
+            <option value="chartering">Ναύλωση</option>
+            <option value="management">Διαχείριση Πλοίου</option>
+            <option value="careers">Καριέρα / Πλήρωμα</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Μήνυμα</label>
+          <textarea id="message" name="message" placeholder="Γράψτε το μήνυμά σας εδώ..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Αποστολή Μηνύματος</button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
+
+    </div>
+
+    <div class="map-embed">
+      <iframe
+        src="https://maps.google.com/maps?q=Piraeus%20Port%2C%20Greece&t=&z=13&ie=UTF8&iwloc=&output=embed"
+        loading="lazy"
+        title="Χάρτης Πειραιά"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>&copy; <span id="year"></span> ΕλληνικήΝαυτιλία — Δοκιμαστική Ιστοσελίδα.</p>
+    <p class="footer-note">Το περιεχόμενο είναι ενδεικτικό, για επίδειξη σχεδιασμού ιστοσελίδας.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
