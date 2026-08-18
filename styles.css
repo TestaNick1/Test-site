@@ -6,8 +6,6 @@
   --blue-500: #1d6fb8;
   --blue-400: #3d92d9;
   --aegean: #0ea5c4;
-  --gold: #c9a24b;
-  --gold-light: #e4c777;
   --white: #ffffff;
   --off-white: #f4f7fa;
   --ink: #1a2733;
@@ -61,7 +59,7 @@ img { max-width: 100%; display: block; }
   text-decoration: none;
   letter-spacing: 0.3px;
 }
-.logo span { color: var(--gold-light); }
+.logo span { color: #cfe0ee; font-weight: 400; }
 
 .nav-list {
   list-style: none;
@@ -140,10 +138,10 @@ img { max-width: 100%; display: block; }
 .btn:hover { transform: translateY(-2px); }
 
 .btn-primary {
-  background: var(--gold-light);
+  background: var(--white);
   color: var(--navy-950);
 }
-.btn-primary:hover { box-shadow: 0 8px 20px rgba(228,199,119,0.35); }
+.btn-primary:hover { box-shadow: 0 8px 20px rgba(255,255,255,0.35); }
 
 .btn-outline {
   border-color: rgba(255,255,255,0.5);
@@ -170,7 +168,7 @@ img { max-width: 100%; display: block; }
   display: block;
   font-size: 2.2rem;
   font-weight: 800;
-  color: var(--gold-light);
+  color: var(--white);
 }
 
 .stat-label {
@@ -365,7 +363,7 @@ img { max-width: 100%; display: block; }
   margin: 0 auto 14px;
   border-radius: 50%;
   background: var(--navy-900);
-  color: var(--gold-light);
+  color: var(--white);
   font-weight: 700;
 }
 
@@ -423,7 +421,7 @@ tbody tr { border-bottom: 1px solid var(--border); }
   border-radius: var(--radius);
   padding: 32px;
 }
-.contact-info h3 { margin-top: 0; color: var(--gold-light); }
+.contact-info h3 { margin-top: 0; color: var(--white); }
 .contact-item { display: flex; gap: 12px; margin-bottom: 18px; }
 .contact-item .icon { font-size: 1.3rem; }
 .contact-item p { margin: 0; color: #c9d7e3; font-size: 0.92rem; }
