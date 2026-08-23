@@ -5,12 +5,22 @@
    * Data
    * ------------------------------------------------------------- */
   const CARS = [
-    { id: "starter", name: "Corolla Draggy", price: 0, power: 90, weight: 1200, grip: 0.60, color: "#8a93a3" },
-    { id: "gt", name: "GT Turbo", price: 3000, power: 150, weight: 1250, grip: 0.65, color: "#2980b9" },
-    { id: "v8", name: "Muscle V8", price: 8000, power: 220, weight: 1450, grip: 0.60, color: "#c0392b" },
-    { id: "rally", name: "Rally Beast", price: 15000, power: 260, weight: 1300, grip: 0.75, color: "#27ae60" },
-    { id: "tuner", name: "Import Tuner", price: 25000, power: 320, weight: 1150, grip: 0.70, color: "#f39c12" },
-    { id: "hyper", name: "Hyper Dragster", price: 50000, power: 500, weight: 900, grip: 0.80, color: "#8e44ad" },
+    // Toyota
+    { id: "starter", name: "Toyota Yaris", price: 0, power: 92, weight: 1080, grip: 0.55, color: "#b5453f" },
+    { id: "corolla", name: "Toyota Corolla", price: 6000, power: 140, weight: 1300, grip: 0.62, color: "#d64541" },
+    { id: "supra", name: "Toyota GR Supra", price: 32000, power: 340, weight: 1520, grip: 0.78, color: "#ff2d3d" },
+    // Honda
+    { id: "jazz", name: "Honda Jazz", price: 1500, power: 96, weight: 1110, grip: 0.55, color: "#6b7fa3" },
+    { id: "civic", name: "Honda Civic", price: 12000, power: 180, weight: 1350, grip: 0.65, color: "#3f6fb0" },
+    { id: "civictyper", name: "Honda Civic Type R", price: 26000, power: 330, weight: 1430, grip: 0.80, color: "#f2f4f7" },
+    // Volkswagen
+    { id: "polo", name: "VW Polo", price: 2800, power: 105, weight: 1160, grip: 0.58, color: "#9aa0a6" },
+    { id: "golf", name: "VW Golf", price: 8500, power: 150, weight: 1350, grip: 0.65, color: "#5b6470" },
+    { id: "golfr", name: "VW Golf R", price: 22000, power: 320, weight: 1500, grip: 0.82, color: "#1f3a93" },
+    // Nissan
+    { id: "micra", name: "Nissan Micra", price: 2000, power: 100, weight: 1110, grip: 0.55, color: "#d98c3d" },
+    { id: "juke", name: "Nissan Juke", price: 4200, power: 115, weight: 1260, grip: 0.60, color: "#e07b39" },
+    { id: "gtr", name: "Nissan GT-R", price: 55000, power: 570, weight: 1750, grip: 0.85, color: "#7d8188" },
   ];
 
   const UPGRADES = [
