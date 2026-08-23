@@ -387,6 +387,97 @@
   }
 
   /* ---------------------------------------------------------------
+   * Audio (synthesized — no external files)
+   * ------------------------------------------------------------- */
+  let audioCtx = null;
+  let engine = null; // { osc1, osc2, filter, gain }
+
+  function ensureAudio() {
+    if (!audioCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      audioCtx = new Ctx();
+    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  function startEngineSound() {
+    const ctx = ensureAudio();
+    if (!ctx || engine) return;
+    const osc1 = ctx.createOscillator();
+    osc1.type = "sawtooth";
+    const osc2 = ctx.createOscillator();
+    osc2.type = "square";
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 700;
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    osc1.frequency.value = 70;
+    osc2.frequency.value = 70.5;
+    osc1.start();
+    osc2.start();
+    engine = { osc1, osc2, filter, gain };
+  }
+
+  function updateEngineSound(rpm, gear, throttleOn) {
+    if (!engine || !audioCtx) return;
+    const t = audioCtx.currentTime;
+    const freq = 65 + gear * 16 + rpm * 130;
+    engine.osc1.frequency.setTargetAtTime(freq, t, 0.03);
+    engine.osc2.frequency.setTargetAtTime(freq * 1.006, t, 0.03);
+    engine.filter.frequency.setTargetAtTime(450 + rpm * 2200, t, 0.05);
+    const targetGain = throttleOn ? 0.13 : 0.035;
+    engine.gain.gain.setTargetAtTime(targetGain, t, 0.06);
+  }
+
+  function stopEngineSound() {
+    if (!engine || !audioCtx) return;
+    const { osc1, osc2, gain } = engine;
+    const t = audioCtx.currentTime;
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setTargetAtTime(0, t, 0.08);
+    setTimeout(() => { try { osc1.stop(); osc2.stop(); } catch (e) {} }, 300);
+    engine = null;
+  }
+
+  function playShiftSound(kind) {
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const startFreq = kind === "perfect" ? 440 : kind === "bog" ? 200 : 300;
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(startFreq, t);
+    osc.frequency.exponentialRampToValueAtTime(startFreq * 0.45, t + 0.13);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.22, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+    osc.start(t);
+    osc.stop(t + 0.16);
+
+    const dur = 0.04;
+    const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.value = 0.12;
+    noise.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(t);
+  }
+
+  /* ---------------------------------------------------------------
    * UI wiring
    * ------------------------------------------------------------- */
   const $ = (id) => document.getElementById(id);
@@ -542,9 +633,11 @@
     if (raceRAF) cancelAnimationFrame(raceRAF);
     raceRAF = null;
     raceState = null;
+    stopEngineSound();
   }
 
   $("btnStart").addEventListener("click", () => {
+    ensureAudio();
     $("btnStart").classList.add("hidden");
     beginCountdown();
   });
@@ -575,6 +668,7 @@
           raceState.phase = "racing";
           $("btnGas").classList.remove("hidden");
           $("btnShift").classList.remove("hidden");
+          startEngineSound();
           startLoop();
         }
       }
@@ -599,6 +693,7 @@
       updateRacer(raceState.rival, dt, raceState.t);
       drawTrack(raceState.player.dist / DIST, raceState.rival.dist / DIST);
       updateHud(raceState.player, raceState.rival);
+      updateEngineSound(raceState.player.rpm, raceState.player.gear, raceState.player.throttle);
 
       if (raceState.player.finished || raceState.rival.finished) {
         finishRace();
@@ -666,6 +761,8 @@
   function doShift() {
     if (!raceState || raceState.phase !== "racing") return;
     const result = tryShift(raceState.player);
+    if (!result) return;
+    playShiftSound(result);
     if (result === "perfect") flashMessage("✅ ΤΕΛΕΙΑ ΑΛΛΑΓΗ!", "var(--green)");
     else if (result === "bog") flashMessage("😬 Η μηχανή κόλλησε...", "var(--red)");
   }
