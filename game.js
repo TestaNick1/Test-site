@@ -206,6 +206,18 @@
   }
 
   /* ---- Garage ---- */
+  function carSvg(color) {
+    return `<svg viewBox="0 0 100 45" preserveAspectRatio="xMidYMid meet">
+      <ellipse cx="50" cy="40" rx="42" ry="4" fill="rgba(0,0,0,0.4)"/>
+      <circle cx="28" cy="34" r="9" fill="#111"/>
+      <circle cx="72" cy="34" r="9" fill="#111"/>
+      <circle cx="28" cy="34" r="3.5" fill="#555"/>
+      <circle cx="72" cy="34" r="3.5" fill="#555"/>
+      <polygon points="10,34 16,14 34,1 68,1 84,14 90,34" fill="${color}"/>
+      <polygon points="38,4 46,14 66,14 64,4" fill="rgba(255,255,255,0.35)"/>
+    </svg>`;
+  }
+
   function renderCarCard(carId, mode) {
     const car = getCarDef(carId);
     const owned = !!state.ownedCars[carId];
@@ -213,7 +225,7 @@
     div.className = "car-card" + (mode === "garage" && state.activeCar === carId ? " active" : "");
     const stats = owned ? getEffectiveStats(carId) : { power: car.power, weight: car.weight, grip: car.grip };
     div.innerHTML = `
-      <div class="car-swatch" style="background:${car.color}"></div>
+      <div class="car-swatch">${carSvg(car.color)}</div>
       <h3>${car.name}</h3>
       <div class="car-stats">
         Ισχύς: ${Math.round(stats.power)}
