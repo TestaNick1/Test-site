@@ -109,27 +109,88 @@
     },
   };
 
-  function shapeMarkup(shape, color, tag) {
-    const pts = (p) => p.map((xy) => xy.join(",")).join(" ");
-    let out = "";
-    shape.wheels.forEach((w) => {
-      out += tag === "svg"
-        ? `<circle cx="${w.cx}" cy="${w.cy}" r="${w.r}" fill="#111"/><circle cx="${w.cx}" cy="${w.cy}" r="${w.r * 0.4}" fill="#555"/>`
-        : "";
-    });
-    out += tag === "svg" ? `<polygon points="${pts(shape.body)}" fill="${color}"/>` : "";
-    (shape.windows || []).forEach((w) => {
-      out += tag === "svg" ? `<polygon points="${pts(w)}" fill="rgba(255,255,255,0.35)"/>` : "";
-    });
-    (shape.extras || []).forEach((e) => {
-      out += tag === "svg" ? `<polygon points="${pts(e.pts)}" fill="${e.fill}"/>` : "";
-    });
-    return out;
+  function shadeColor(hex, percent) {
+    const num = parseInt(hex.replace("#", ""), 16);
+    let r = (num >> 16) + percent;
+    let g = ((num >> 8) & 0x00ff) + percent;
+    let b = (num & 0x0000ff) + percent;
+    r = Math.max(Math.min(255, r), 0);
+    g = Math.max(Math.min(255, g), 0);
+    b = Math.max(Math.min(255, b), 0);
+    return "#" + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
   }
+
+  let svgGradSeq = 0;
 
   function carSvg(carId, color) {
     const shape = CAR_SHAPES[carId] || CAR_SHAPES.rival;
-    return `<svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">${shapeMarkup(shape, color, "svg")}</svg>`;
+    const uid = "g" + svgGradSeq++;
+    const pts = (p) => p.map((xy) => xy.join(",")).join(" ");
+    const light = shadeColor(color, 50);
+    const dark = shadeColor(color, -35);
+    let s = `<svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">`;
+    s += `<defs>
+      <linearGradient id="body-${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${light}"/>
+        <stop offset="55%" stop-color="${color}"/>
+        <stop offset="100%" stop-color="${dark}"/>
+      </linearGradient>
+      <linearGradient id="glass-${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#c3ccd9"/>
+        <stop offset="50%" stop-color="#5c6b80"/>
+        <stop offset="100%" stop-color="#20262f"/>
+      </linearGradient>
+      <radialGradient id="rim-${uid}" cx="35%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#e7e9ec"/>
+        <stop offset="100%" stop-color="#8a8f96"/>
+      </radialGradient>
+    </defs>`;
+    s += `<ellipse cx="100" cy="77" rx="86" ry="5" fill="rgba(0,0,0,0.4)"/>`;
+    shape.wheels.forEach((w) => { s += wheelMarkup(w, uid); });
+    s += `<polygon points="${pts(shape.body)}" fill="url(#body-${uid})"/>`;
+    (shape.windows || []).forEach((w) => {
+      s += `<polygon points="${pts(w)}" fill="url(#glass-${uid})"/>`;
+    });
+    (shape.extras || []).forEach((e) => {
+      s += `<polygon points="${pts(e.pts)}" fill="${e.fill}"/>`;
+    });
+    return s + `</svg>`;
+  }
+
+  function wheelMarkup(w, uid) {
+    let s = `<circle cx="${w.cx}" cy="${w.cy}" r="${w.r}" fill="#0c0d10"/>`;
+    s += `<circle cx="${w.cx}" cy="${w.cy}" r="${w.r * 0.6}" fill="url(#rim-${uid})"/>`;
+    for (let i = 0; i < 5; i++) {
+      const ang = (i / 5) * Math.PI * 2;
+      const x1 = w.cx + Math.cos(ang) * w.r * 0.15;
+      const y1 = w.cy + Math.sin(ang) * w.r * 0.15;
+      const x2 = w.cx + Math.cos(ang) * w.r * 0.55;
+      const y2 = w.cy + Math.sin(ang) * w.r * 0.55;
+      s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#5a5e64" stroke-width="${(w.r * 0.14).toFixed(1)}"/>`;
+    }
+    s += `<circle cx="${w.cx}" cy="${w.cy}" r="${w.r * 0.16}" fill="#3a3d42"/>`;
+    return s;
+  }
+
+  function drawWheelCanvas(ctx, w) {
+    ctx.fillStyle = "#0c0d10";
+    ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r, 0, Math.PI * 2); ctx.fill();
+    const rimGrad = ctx.createRadialGradient(w.cx - w.r * 0.2, w.cy - w.r * 0.2, w.r * 0.05, w.cx, w.cy, w.r * 0.6);
+    rimGrad.addColorStop(0, "#e7e9ec");
+    rimGrad.addColorStop(1, "#8a8f96");
+    ctx.fillStyle = rimGrad;
+    ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r * 0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#5a5e64";
+    ctx.lineWidth = w.r * 0.14;
+    for (let i = 0; i < 5; i++) {
+      const ang = (i / 5) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(w.cx + Math.cos(ang) * w.r * 0.15, w.cy + Math.sin(ang) * w.r * 0.15);
+      ctx.lineTo(w.cx + Math.cos(ang) * w.r * 0.55, w.cy + Math.sin(ang) * w.r * 0.55);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#3a3d42";
+    ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r * 0.16, 0, Math.PI * 2); ctx.fill();
   }
 
   function drawCarShape(ctx, x, y, carId, color) {
@@ -138,22 +199,34 @@
     ctx.translate(x, y);
     ctx.scale(0.4, 0.4);
     ctx.translate(-100, -50);
-    shape.wheels.forEach((w) => {
-      ctx.fillStyle = "#111";
-      ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#555";
-      ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r * 0.4, 0, Math.PI * 2); ctx.fill();
-    });
-    ctx.fillStyle = color;
+
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    ctx.beginPath();
+    ctx.ellipse(100, 77, 86, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    shape.wheels.forEach((w) => drawWheelCanvas(ctx, w));
+
+    const bodyGrad = ctx.createLinearGradient(0, 0, 0, 90);
+    bodyGrad.addColorStop(0, shadeColor(color, 50));
+    bodyGrad.addColorStop(0.55, color);
+    bodyGrad.addColorStop(1, shadeColor(color, -35));
+    ctx.fillStyle = bodyGrad;
     ctx.beginPath();
     shape.body.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
     ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255,0.35)";
+
+    const glassGrad = ctx.createLinearGradient(0, 0, 200, 90);
+    glassGrad.addColorStop(0, "#c3ccd9");
+    glassGrad.addColorStop(0.5, "#5c6b80");
+    glassGrad.addColorStop(1, "#20262f");
+    ctx.fillStyle = glassGrad;
     (shape.windows || []).forEach((w) => {
       ctx.beginPath();
       w.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
       ctx.closePath(); ctx.fill();
     });
+
     (shape.extras || []).forEach((e) => {
       ctx.fillStyle = e.fill;
       ctx.beginPath();
