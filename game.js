@@ -23,6 +23,146 @@
     { id: "gtr", name: "Nissan GT-R", price: 55000, power: 570, weight: 1750, grip: 0.85, color: "#7d8188" },
   ];
 
+  // Per-model side-profile silhouettes (nose points right). viewBox is 200x90.
+  const CAR_SHAPES = {
+    starter: { // Toyota Yaris — small rounded city hatch
+      body: [[14,70],[14,54],[34,24],[70,18],[96,32],[150,32],[172,44],[180,70]],
+      windows: [[[40,30],[68,22],[92,32],[86,42],[46,42]]],
+      wheels: [{ cx: 36, cy: 70, r: 15 }, { cx: 154, cy: 70, r: 15 }],
+    },
+    corolla: { // Toyota Corolla — 3-box sedan, longer trunk deck
+      body: [[8,70],[8,58],[30,50],[52,20],[92,15],[118,34],[160,34],[182,50],[190,70]],
+      windows: [[[58,26],[90,20],[112,34],[64,36]]],
+      wheels: [{ cx: 34, cy: 70, r: 15 }, { cx: 164, cy: 70, r: 15 }],
+    },
+    supra: { // Toyota GR Supra — long hood, short fastback cabin, ducktail
+      body: [[16,64],[16,50],[50,20],[86,16],[100,34],[178,42],[190,58],[190,68],[16,68]],
+      windows: [[[56,22],[84,18],[96,34],[62,36]]],
+      wheels: [{ cx: 40, cy: 68, r: 17 }, { cx: 164, cy: 68, r: 17 }],
+      extras: [{ pts: [[14,48],[26,44],[30,50],[16,52]], fill: "#343a46" }],
+    },
+    jazz: { // Honda Jazz — tall boxy hatch, upright tailgate
+      body: [[16,70],[16,44],[22,16],[100,12],[124,32],[158,32],[178,48],[184,70]],
+      windows: [[[30,22],[96,18],[118,32],[36,36]]],
+      wheels: [{ cx: 38, cy: 70, r: 15 }, { cx: 158, cy: 70, r: 15 }],
+    },
+    civic: { // Honda Civic — sleeker, lower sedan
+      body: [[8,70],[8,56],[28,48],[54,18],[96,13],[120,32],[162,32],[184,48],[192,70]],
+      windows: [[[60,24],[92,17],[114,32],[66,34]]],
+      wheels: [{ cx: 34, cy: 70, r: 15 }, { cx: 168, cy: 70, r: 15 }],
+    },
+    civictyper: { // Honda Civic Type R — hot hatch, big wing, splitter
+      body: [[16,68],[16,48],[26,42],[38,16],[92,13],[116,32],[156,32],[178,46],[184,68]],
+      windows: [[[46,22],[88,17],[110,32],[52,34]]],
+      wheels: [{ cx: 38, cy: 68, r: 17 }, { cx: 160, cy: 68, r: 17 }],
+      extras: [
+        { pts: [[14,38],[36,34],[36,41],[14,46]], fill: "#343a46" },
+        { pts: [[16,34],[19,35],[19,45],[16,44]], fill: "#343a46" },
+        { pts: [[176,64],[188,64],[186,70],[174,70]], fill: "#343a46" },
+      ],
+    },
+    polo: { // VW Polo — small, flat-roofed German hatch
+      body: [[14,70],[14,52],[30,26],[62,18],[92,18],[112,34],[150,34],[172,46],[180,70]],
+      windows: [[[38,26],[64,20],[90,20],[104,34],[44,36]]],
+      wheels: [{ cx: 36, cy: 70, r: 15 }, { cx: 154, cy: 70, r: 15 }],
+    },
+    golf: { // VW Golf — longer hatch, flat roofline
+      body: [[12,68],[12,50],[26,28],[56,17],[100,15],[126,32],[164,32],[182,46],[188,68]],
+      windows: [[[34,26],[60,19],[98,17],[118,32],[40,36]]],
+      wheels: [{ cx: 34, cy: 68, r: 15 }, { cx: 168, cy: 68, r: 15 }],
+    },
+    golfr: { // VW Golf R — Golf hatch + roof spoiler + diffuser
+      body: [[12,68],[12,50],[26,28],[56,16],[100,14],[126,32],[164,32],[182,46],[188,68]],
+      windows: [[[34,25],[60,18],[98,16],[118,32],[40,36]]],
+      wheels: [{ cx: 34, cy: 68, r: 16 }, { cx: 168, cy: 68, r: 16 }],
+      extras: [
+        { pts: [[16,26],[32,21],[34,27],[18,31]], fill: "#343a46" },
+        { pts: [[12,60],[28,60],[26,68],[12,68]], fill: "#343a46" },
+      ],
+    },
+    micra: { // Nissan Micra — round, bubbly supermini, short wheelbase
+      body: [[18,68],[18,50],[36,22],[64,16],[92,22],[130,22],[152,38],[168,50],[172,68]],
+      windows: [[[42,26],[66,20],[88,26],[122,26],[132,38],[48,40]]],
+      wheels: [{ cx: 40, cy: 68, r: 14 }, { cx: 150, cy: 68, r: 14 }],
+    },
+    juke: { // Nissan Juke — crossover: higher stance, cladding, big wheels
+      body: [[14,64],[14,42],[30,18],[62,13],[102,13],[124,28],[168,28],[180,44],[184,64]],
+      windows: [[[36,22],[64,17],[100,17],[118,28],[42,32]]],
+      wheels: [{ cx: 38, cy: 64, r: 18 }, { cx: 158, cy: 64, r: 18 }],
+      extras: [{ pts: [[16,58],[182,58],[182,64],[16,64]], fill: "rgba(15,15,18,0.35)" }],
+    },
+    gtr: { // Nissan GT-R — low wide supercar, big rear wing, splitter
+      body: [[16,62],[16,48],[36,44],[54,18],[92,14],[126,18],[146,44],[168,44],[186,56],[190,62]],
+      windows: [[[60,24],[90,19],[122,24],[128,40],[64,40]]],
+      wheels: [{ cx: 42, cy: 62, r: 18 }, { cx: 160, cy: 62, r: 18 }],
+      extras: [
+        { pts: [[10,30],[38,26],[38,33],[10,37]], fill: "#343a46" },
+        { pts: [[16,32],[20,32],[20,45],[16,45]], fill: "#343a46" },
+        { pts: [[30,28],[34,28],[34,42],[30,42]], fill: "#343a46" },
+        { pts: [[178,58],[192,58],[190,64],[176,64]], fill: "#343a46" },
+      ],
+    },
+    rival: { // generic silhouette for AI opponents (no purchasable model)
+      body: [[14,70],[14,52],[32,26],[64,17],[100,17],[122,34],[158,34],[178,46],[184,70]],
+      windows: [[[40,26],[66,20],[98,20],[116,34],[46,36]]],
+      wheels: [{ cx: 36, cy: 70, r: 15 }, { cx: 160, cy: 70, r: 15 }],
+    },
+  };
+
+  function shapeMarkup(shape, color, tag) {
+    const pts = (p) => p.map((xy) => xy.join(",")).join(" ");
+    let out = "";
+    shape.wheels.forEach((w) => {
+      out += tag === "svg"
+        ? `<circle cx="${w.cx}" cy="${w.cy}" r="${w.r}" fill="#111"/><circle cx="${w.cx}" cy="${w.cy}" r="${w.r * 0.4}" fill="#555"/>`
+        : "";
+    });
+    out += tag === "svg" ? `<polygon points="${pts(shape.body)}" fill="${color}"/>` : "";
+    (shape.windows || []).forEach((w) => {
+      out += tag === "svg" ? `<polygon points="${pts(w)}" fill="rgba(255,255,255,0.35)"/>` : "";
+    });
+    (shape.extras || []).forEach((e) => {
+      out += tag === "svg" ? `<polygon points="${pts(e.pts)}" fill="${e.fill}"/>` : "";
+    });
+    return out;
+  }
+
+  function carSvg(carId, color) {
+    const shape = CAR_SHAPES[carId] || CAR_SHAPES.rival;
+    return `<svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">${shapeMarkup(shape, color, "svg")}</svg>`;
+  }
+
+  function drawCarShape(ctx, x, y, carId, color) {
+    const shape = CAR_SHAPES[carId] || CAR_SHAPES.rival;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(0.4, 0.4);
+    ctx.translate(-100, -50);
+    shape.wheels.forEach((w) => {
+      ctx.fillStyle = "#111";
+      ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#555";
+      ctx.beginPath(); ctx.arc(w.cx, w.cy, w.r * 0.4, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    shape.body.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    (shape.windows || []).forEach((w) => {
+      ctx.beginPath();
+      w.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+      ctx.closePath(); ctx.fill();
+    });
+    (shape.extras || []).forEach((e) => {
+      ctx.fillStyle = e.fill;
+      ctx.beginPath();
+      e.pts.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+      ctx.closePath(); ctx.fill();
+    });
+    ctx.restore();
+  }
+
   const UPGRADES = [
     { key: "engine", name: "Κινητήρας", baseCost: 400 },
     { key: "turbo", name: "Turbo", baseCost: 600 },
@@ -216,18 +356,6 @@
   }
 
   /* ---- Garage ---- */
-  function carSvg(color) {
-    return `<svg viewBox="0 0 100 45" preserveAspectRatio="xMidYMid meet">
-      <ellipse cx="50" cy="40" rx="42" ry="4" fill="rgba(0,0,0,0.4)"/>
-      <circle cx="28" cy="34" r="9" fill="#111"/>
-      <circle cx="72" cy="34" r="9" fill="#111"/>
-      <circle cx="28" cy="34" r="3.5" fill="#555"/>
-      <circle cx="72" cy="34" r="3.5" fill="#555"/>
-      <polygon points="10,34 16,14 34,1 68,1 84,14 90,34" fill="${color}"/>
-      <polygon points="38,4 46,14 66,14 64,4" fill="rgba(255,255,255,0.35)"/>
-    </svg>`;
-  }
-
   function renderCarCard(carId, mode) {
     const car = getCarDef(carId);
     const owned = !!state.ownedCars[carId];
@@ -235,7 +363,7 @@
     div.className = "car-card" + (mode === "garage" && state.activeCar === carId ? " active" : "");
     const stats = owned ? getEffectiveStats(carId) : { power: car.power, weight: car.weight, grip: car.grip };
     div.innerHTML = `
-      <div class="car-swatch">${carSvg(car.color)}</div>
+      <div class="car-swatch">${carSvg(carId, car.color)}</div>
       <h3>${car.name}</h3>
       <div class="car-stats">
         Ισχύς: ${Math.round(stats.power)}
@@ -517,36 +645,6 @@
   const canvas = $("raceCanvas");
   const ctx = canvas.getContext("2d");
 
-  function drawCar(x, laneY, color) {
-    ctx.save();
-    ctx.translate(x, laneY);
-    // wheels
-    ctx.fillStyle = "#111";
-    ctx.beginPath(); ctx.arc(-22, 16, 9, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(22, 16, 9, 0, Math.PI * 2); ctx.fill();
-    // body
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(-40, 16);
-    ctx.lineTo(-34, -4);
-    ctx.lineTo(-16, -18);
-    ctx.lineTo(18, -18);
-    ctx.lineTo(34, -4);
-    ctx.lineTo(40, 16);
-    ctx.closePath();
-    ctx.fill();
-    // window
-    ctx.fillStyle = "rgba(255,255,255,0.35)";
-    ctx.beginPath();
-    ctx.moveTo(-12, -15);
-    ctx.lineTo(-4, -4);
-    ctx.lineTo(16, -4);
-    ctx.lineTo(14, -15);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
   function drawTrack(playerProgress, rivalProgress) {
     const w = canvas.width, h = canvas.height;
     ctx.clearRect(0, 0, w, h);
@@ -581,8 +679,8 @@
 
     const playerColor = getEffectiveStats(state.activeCar).color;
     const rivalColor = "#95a5a6";
-    drawCar(px, laneH * 0.5, playerColor);
-    drawCar(rx, laneH * 1.5, rivalColor);
+    drawCarShape(ctx, px, laneH * 0.5, state.activeCar, playerColor);
+    drawCarShape(ctx, rx, laneH * 1.5, "rival", rivalColor);
   }
 
   /* ---------------------------------------------------------------
