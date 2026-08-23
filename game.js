@@ -45,7 +45,7 @@
   const GEAR_MIN_MULT = 0.55;
   const K = 140;
   const CD = 1.55;
-  const SAVE_KEY = "dragRacingSaveV1";
+  const SAVE_KEY = "dragRacingSaveV2";
 
   /* ---------------------------------------------------------------
    * State
