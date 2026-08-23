@@ -1,5 +1,5 @@
 :root {
-  --bg: #0d0f14;
+  --bg: #0b0d12;
   --panel: #161a23;
   --panel-2: #1e2430;
   --line: #2b3242;
@@ -9,6 +9,8 @@
   --red: #ff3b5c;
   --text: #e8ecf4;
   --muted: #8b93a7;
+  --font-display: "Rajdhani", "Segoe UI", Arial, sans-serif;
+  --font-body: "Manrope", "Segoe UI", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -17,11 +19,23 @@ body {
   margin: 0;
   background: radial-gradient(circle at top, #1a1f2b 0%, var(--bg) 60%);
   color: var(--text);
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
 }
 
 a { color: var(--accent-2); }
+
+h1, h2, h3,
+.tab-btn, .hud-label, .hud-row b, .cash-display,
+.big-btn, .small-btn, .rival-card h3, .car-card h3, .upgrade-name,
+.playerGear, .rpm-readout {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.hud-row b, .cash-display, #playerSpeed, #rivalSpeed, #playerGear, #rivalGear {
+  font-variant-numeric: tabular-nums;
+}
 
 .topbar {
   display: flex;
@@ -32,7 +46,7 @@ a { color: var(--accent-2); }
   background: var(--panel);
   border-bottom: 2px solid var(--accent);
 }
-.topbar h1 { margin: 0; font-size: 1.3rem; flex: 1 1 auto; }
+.topbar h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.02em; flex: 1 1 auto; }
 .topbar nav { font-size: 0.9rem; color: var(--muted); }
 .cash-display {
   background: var(--panel-2);
@@ -56,7 +70,9 @@ a { color: var(--accent-2); }
   padding: 10px 18px;
   border-radius: 10px 10px 0 0;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .tab-btn.active { background: var(--panel-2); color: var(--text); border-color: var(--accent); }
 
@@ -86,16 +102,32 @@ h2 { margin-top: 0; }
 #raceCanvas { width: 100%; max-width: 900px; height: auto; background: #23262e; border-radius: 10px; border: 1px solid var(--line); }
 .hud { display: flex; gap: 16px; margin-top: 12px; }
 .hud-col { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
-.hud-label { font-weight: bold; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+.hud-label { font-weight: 700; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
 .hud-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 6px; }
 
-.rpm-gauge { position: relative; height: 16px; background: #0b0d12; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
-.rpm-zone-green { position: absolute; left: 65%; width: 25%; top: 0; bottom: 0; background: rgba(55,214,122,0.25); pointer-events: none; }
-.rpm-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transition: width 0.05s linear; }
+.rpm-gauge { position: relative; height: 16px; background: #05060a; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.rpm-gauge::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.35) 0 1px, transparent 1px 10%);
+}
+.rpm-zone-green { position: absolute; left: 65%; width: 25%; top: 0; bottom: 0; background: rgba(55,214,122,0.22); z-index: 1; pointer-events: none; }
+.rpm-fill { position: relative; z-index: 0; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transition: width 0.05s linear; }
 .rpm-fill.rival { background: linear-gradient(90deg, #666, #999); }
 
-.race-message { min-height: 28px; font-weight: bold; font-size: 1.1rem; margin-top: 10px; color: var(--accent); }
-.countdown { font-size: 3rem; font-weight: bold; color: var(--accent); }
+.race-message { min-height: 28px; font-weight: 700; font-size: 1.1rem; margin-top: 10px; color: var(--accent); }
+
+/* Drag-strip "Christmas tree" start lights */
+.tree { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 6px auto; }
+.bulb {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 2px solid var(--line);
+  background: #14171e;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+.bulb.amber.lit { background: var(--accent); box-shadow: 0 0 20px 5px rgba(255,90,46,0.65); border-color: var(--accent); }
+.bulb.green.lit { background: var(--green); box-shadow: 0 0 20px 5px rgba(55,214,122,0.65); border-color: var(--green); }
 
 .controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
 .big-btn {

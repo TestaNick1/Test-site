@@ -335,14 +335,16 @@
     raceState = { player, rival, phase: "countdown", falseStart: false, t: 0 };
 
     const cd = $("countdown");
+    const bulbs = cd.querySelectorAll(".bulb");
+    bulbs.forEach((b) => b.classList.remove("lit"));
     cd.classList.remove("hidden");
     $("raceMessage").textContent = "";
     let n = 3;
-    cd.textContent = n;
+    bulbs[0].classList.add("lit");
     const iv = setInterval(() => {
       n--;
-      if (n > 0) { cd.textContent = n; }
-      else if (n === 0) { cd.textContent = "GO!"; }
+      if (n > 0) { bulbs[3 - n].classList.add("lit"); }
+      else if (n === 0) { bulbs[3].classList.add("lit"); }
       else {
         clearInterval(iv);
         cd.classList.add("hidden");
